@@ -1,17 +1,35 @@
 const express = require('express');
 const cors = require('cors');
-const { connectToDb, getDb } = require('./db');
-const { ObjectId } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb')
+require('dotenv').config()
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000
 
-app.use(cors());
-app.use(express.json());
+app.use(express.json())
+app.use(cors())
+
+const uri = process.env.MONGODB_URI
+const client = new MongoClient(uri)
+let db;
+
+const connectToDatabase = async () => {
+  try {
+      await client.connect()
+      db = client.db('playersdb');
+      console.log('Connected to MongoDB')
+  }
+  catch (error) {
+      console.error('Error connecting to MongoDB:', error)
+  }
+}
+
+app.get('/', (req, res) => {
+  res.send('API is running SMOOOOOTHLY')
+})
 
 app.post('/api/players', async (req, res) => {
   try {
-    const db = getDb();
     const { name } = req.body;
 
     // Validate input
@@ -42,7 +60,6 @@ app.put('/api/players/:id/update', async (req, res) => {
   const { result, points } = req.body;
 
   try {
-    const db = getDb();
     const playerId = new ObjectId(id);
     const player = await db.collection('players').findOne({ _id: playerId });
 
@@ -72,7 +89,6 @@ app.put('/api/players/:id/update', async (req, res) => {
 });
 
 app.get('/api/players', async (req, res) => {
-  const db = getDb();
   const players = await db.collection('players').find({}).toArray();
   res.status(200).json(players);
 });
@@ -81,8 +97,7 @@ app.post('/api/teams', async (req, res) => {
   // Logic for assigning players to teams
 });
 
-connectToDb().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-});
+app.listen(PORT, () => {
+  console.log(`API listening on PORT ${PORT}`)
+  connectToDatabase()
+})
