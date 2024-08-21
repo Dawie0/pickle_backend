@@ -55,6 +55,8 @@ app.post('/api/players', async (req, res) => {
   }
 });
 
+// adding this shit
+
 app.put('/api/players/:id/update', async (req, res) => {
   const { id } = req.params;
   const { result, points } = req.body;
