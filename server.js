@@ -124,12 +124,9 @@ app.get('/api/tournament', ensureDbConnection, async (req, res) => {
 app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
   try {
     await db.collection('tournament').deleteMany({});
-    console.log('prev deleted')
 
     const players = await db.collection('players').find({}).toArray();
     const playerNames = players.map(player => player.name);
-
-    console.log('got the players')
 
     let teams = [];
     for (let i = 0; i < playerNames.length; i++) {
@@ -142,8 +139,6 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       const j = Math.floor(Math.random() * (i + 1));
       [teams[i], teams[j]] = [teams[j], teams[i]];
     }
-
-    console.log('Teams set')
 
     const matches = [];
 
@@ -176,14 +171,9 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
         team3: usedPlayers.slice(4, 6),
         team4: usedPlayers.slice(6, 8),
       };
-
       matches.push(matchGames);
     }
-
-    console.log('Matches set up')
-
     await db.collection('tournament').insertMany(matches);
-    console.log('database should be updated')
     res.status(201).send({ message: 'Tournament generated successfully', matches });
   } catch (error) {
     console.error('Error generating tournament:', error);
