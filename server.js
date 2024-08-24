@@ -226,6 +226,26 @@ app.post('/api/tournament/remove-game', ensureDbConnection, async (req, res) => 
   }
 });
 
+app.post('/api/tournament/clear', ensureDbConnection, async (req, res) =>{
+  try {
+    await db.collection('tournament').deleteMany({});
+    res.status(200).json({ message: 'Tournament cleared successfully' });
+    } catch (error) {
+      console.error('Error clearing tournament:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      }
+})
+
+app.post('/api/players/clear', ensureDbConnection, async (req, res) =>{
+  try {
+    await db.collection('players').deleteMany({});
+    res.status(200).json({ message: 'Players cleared successfully' });
+    } catch (error) {
+      console.error('Error clearing players:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      }
+})
+
 // Start the server after ensuring the database connection is established
 connectToDatabase().then(() => {
   app.listen(PORT, () => {
