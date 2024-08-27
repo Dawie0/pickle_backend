@@ -153,15 +153,33 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       usedPlayers.push(...teams[team1Index]);
       teams.splice(team1Index, 1);
 
-      for (let teamLoop = 0; teamLoop <= 2; teamLoop++) {
+      // for (let teamLoop = 0; teamLoop <= 2; teamLoop++) {
+      //   for (let teamsIndex = 0; teamsIndex < teams.length; teamsIndex++) {
+      //     if (!teams[teamsIndex].some(name => usedPlayers.includes(name))) {
+      //       usedPlayers.push(...teams[teamsIndex]);
+      //       teams.splice(teamsIndex, 1);
+      //       break;
+      //     }
+      //   }
+      // }
+      for (let teamLoop = 0; teamLoop < 3; teamLoop++) { // We need 3 more teams (total of 4 teams)
+        let foundTeam = false;
+        
         for (let teamsIndex = 0; teamsIndex < teams.length; teamsIndex++) {
           if (!teams[teamsIndex].some(name => usedPlayers.includes(name))) {
             usedPlayers.push(...teams[teamsIndex]);
             teams.splice(teamsIndex, 1);
-            break;
+            foundTeam = true;
+            break; // Exit the inner loop once a valid team is found
           }
         }
+      
+        if (!foundTeam) {
+          console.log("Not enough valid teams to form a match");
+          break; // Exit the outer loop if no valid team was found in this iteration
+        }
       }
+
       console.log("Used Players Loop: ", usedPlayers)
       // console.log('teams: ', teams)
 
