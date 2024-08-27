@@ -140,8 +140,8 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       [teams[i], teams[j]] = [teams[j], teams[i]];
     }
 
-    console.log('Number of unique teams: ', teams.length)
-    console.log("Teams: ", teams)
+    // console.log('Number of unique teams: ', teams.length)
+    // console.log("Teams: ", teams)
 
     const matches = [];
 
@@ -162,6 +162,8 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
           }
         }
       }
+
+      console.log('teams: ', teams)
 
       matchGames.matchNumber = numMatches + 1;
       matchGames.game1 = {
