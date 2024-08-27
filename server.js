@@ -142,37 +142,77 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
 
     const matches = [];
 
+    // for (let numMatches = 0; numMatches < playerNames.length - 1; numMatches++) {
+    //   let usedPlayers = [];
+    //   let matchGames = {};
+
+    //   const team1Index = Math.floor(Math.random() * teams.length);
+    //   usedPlayers.push(...teams[team1Index]);
+    //   teams.splice(team1Index, 1);
+
+    //   for (let teamLoop = 0; teamLoop <= 2; teamLoop++) {
+    //     for (let teamsIndex = 0; teamsIndex < teams.length; teamsIndex++) {
+    //       if (!teams[teamsIndex].some(name => usedPlayers.includes(name))) {
+    //         usedPlayers.push(...teams[teamsIndex]);
+    //         teams.splice(teamsIndex, 1);
+    //         break;
+    //       }
+    //     }
+    //   }
+
+    //   matchGames.matchNumber = numMatches + 1;
+    //   matchGames.game1 = {
+    //     game_number: 'Game 1',
+    //     team1: usedPlayers.slice(0, 2),
+    //     team2: usedPlayers.slice(2, 4),
+    //   };
+    //   matchGames.game2 = {
+    //     game_number: 'Game 2',
+    //     team3: usedPlayers.slice(4, 6),
+    //     team4: usedPlayers.slice(6, 8),
+    //   };
+    //   matches.push(matchGames);
+    // }
     for (let numMatches = 0; numMatches < playerNames.length - 1; numMatches++) {
-      let usedPlayers = [];
-      let matchGames = {};
+      let usedPlayers = new Set(); // Using Set to keep track of used players
+      let matchGames = { matchNumber: numMatches + 1 };
 
-      const team1Index = Math.floor(Math.random() * teams.length);
-      usedPlayers.push(...teams[team1Index]);
-      teams.splice(team1Index, 1);
+      let matchTeams = [];
 
-      for (let teamLoop = 0; teamLoop <= 2; teamLoop++) {
-        for (let teamsIndex = 0; teamsIndex < teams.length; teamsIndex++) {
-          if (!teams[teamsIndex].some(name => usedPlayers.includes(name))) {
-            usedPlayers.push(...teams[teamsIndex]);
-            teams.splice(teamsIndex, 1);
-            break;
-          }
+      while (matchTeams.length < 4 && teams.length > 0) {
+        const teamIndex = teams.findIndex(
+          team => !team.some(player => usedPlayers.has(player))
+        );
+        
+        if (teamIndex !== -1) {
+          matchTeams.push(teams[teamIndex]);
+          usedPlayers.add(teams[teamIndex][0]);
+          usedPlayers.add(teams[teamIndex][1]);
+          teams.splice(teamIndex, 1);
+        } else {
+          break; // Exit if no valid team can be found
         }
       }
 
-      matchGames.matchNumber = numMatches + 1;
-      matchGames.game1 = {
-        game_number: 'Game 1',
-        team1: usedPlayers.slice(0, 2),
-        team2: usedPlayers.slice(2, 4),
-      };
-      matchGames.game2 = {
-        game_number: 'Game 2',
-        team3: usedPlayers.slice(4, 6),
-        team4: usedPlayers.slice(6, 8),
-      };
-      matches.push(matchGames);
+      // Ensure each game has 2 teams
+      if (matchTeams.length === 4) {
+        matchGames.game1 = {
+          game_number: 'Game 1',
+          team1: matchTeams[0],
+          team2: matchTeams[1],
+        };
+        matchGames.game2 = {
+          game_number: 'Game 2',
+          team1: matchTeams[2],
+          team2: matchTeams[3],
+        };
+        matches.push(matchGames);
+      } else {
+        console.log('Not enough teams to create a full match');
+        break; // Exit if not enough teams to create a match
+      }
     }
+
     await db.collection('tournament').insertMany(matches);
     res.status(201).send({ message: 'Tournament generated successfully', matches });
   } catch (error) {
