@@ -135,10 +135,10 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       }
     }
 
-    for (let i = teams.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [teams[i], teams[j]] = [teams[j], teams[i]];
-    }
+    // for (let i = teams.length - 1; i > 0; i--) {
+    //   const j = Math.floor(Math.random() * (i + 1));
+    //   [teams[i], teams[j]] = [teams[j], teams[i]];
+    // }
 
     // console.log('Number of unique teams: ', teams.length)
     // console.log("Teams: ", teams)
