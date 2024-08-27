@@ -162,8 +162,8 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
           }
         }
       }
-
-      console.log('teams: ', teams)
+      console.log("Used Players Loop: ", usedPlayers)
+      // console.log('teams: ', teams)
 
       matchGames.matchNumber = numMatches + 1;
       matchGames.game1 = {
