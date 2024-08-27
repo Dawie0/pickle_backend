@@ -135,13 +135,6 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       }
     }
 
-    // for (let i = teams.length - 1; i > 0; i--) {
-    //   const j = Math.floor(Math.random() * (i + 1));
-    //   [teams[i], teams[j]] = [teams[j], teams[i]];
-    // }
-
-    // console.log('Number of unique teams: ', teams.length)
-    // console.log("Teams: ", teams)
 
     const matches = [];
 
@@ -149,19 +142,6 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       let usedPlayers = [];
       let matchGames = {};
 
-      // const team1Index = Math.floor(Math.random() * teams.length);
-      // usedPlayers.push(...teams[team1Index]);
-      // teams.splice(team1Index, 1);
-
-      // for (let teamLoop = 0; teamLoop <= 2; teamLoop++) {
-      //   for (let teamsIndex = 0; teamsIndex < teams.length; teamsIndex++) {
-      //     if (!teams[teamsIndex].some(name => usedPlayers.includes(name))) {
-      //       usedPlayers.push(...teams[teamsIndex]);
-      //       teams.splice(teamsIndex, 1);
-      //       break;
-      //     }
-      //   }
-      // }
       for (let teamLoop = 0; teamLoop < 4; teamLoop++) { // We need 3 more teams (total of 4 teams)
         let foundTeam = false;
         
@@ -179,8 +159,6 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
           break; // Exit the outer loop if no valid team was found in this iteration
         }
       }
-
-      // console.log("Used Players Loop: ", usedPlayers)
       
 
       matchGames.matchNumber = numMatches + 1;
@@ -197,7 +175,18 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       matches.push(matchGames);
     }
 
-    console.log('teams after loop: ', teams)
+    for (let i = 0; i < matches.length; i++) {
+      if (i % 2 === 0) { // This will target matches 1, 3, 5, 7 (0-indexed: 0, 2, 4, 6)
+        const temp = matches[i].game1;
+        matches[i].game1 = matches[i].game2;
+        matches[i].game2 = temp;
+      }
+    }
+
+    for (let i = matches.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [matches[i], matches[j]] = [matches[j], matches[i]];
+    }
     
     await db.collection('tournament').insertMany(matches);
     res.status(201).send({ message: 'Tournament generated successfully', matches });
