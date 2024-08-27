@@ -149,9 +149,9 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       let usedPlayers = [];
       let matchGames = {};
 
-      const team1Index = Math.floor(Math.random() * teams.length);
-      usedPlayers.push(...teams[team1Index]);
-      teams.splice(team1Index, 1);
+      // const team1Index = Math.floor(Math.random() * teams.length);
+      // usedPlayers.push(...teams[team1Index]);
+      // teams.splice(team1Index, 1);
 
       // for (let teamLoop = 0; teamLoop <= 2; teamLoop++) {
       //   for (let teamsIndex = 0; teamsIndex < teams.length; teamsIndex++) {
@@ -162,7 +162,7 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       //     }
       //   }
       // }
-      for (let teamLoop = 0; teamLoop < 3; teamLoop++) { // We need 3 more teams (total of 4 teams)
+      for (let teamLoop = 0; teamLoop < 4; teamLoop++) { // We need 3 more teams (total of 4 teams)
         let foundTeam = false;
         
         for (let teamsIndex = 0; teamsIndex < teams.length; teamsIndex++) {
