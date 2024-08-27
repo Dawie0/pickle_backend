@@ -141,6 +141,7 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
     }
 
     console.log('Number of unique teams: ', teams.length)
+    console.log("Teams: ", teams)
 
     const matches = [];
 
