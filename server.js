@@ -175,13 +175,13 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       matches.push(matchGames);
     }
 
-    for (let i = 0; i < matches.length; i++) {
-      if (i % 2 === 0) { // This will target matches 1, 3, 5, 7 (0-indexed: 0, 2, 4, 6)
-        const temp = matches[i].game1;
-        matches[i].game1 = matches[i].game2;
-        matches[i].game2 = temp;
-      }
-    }
+    // for (let i = 0; i < matches.length; i++) {
+    //   if (i % 2 === 0) { // This will target matches 1, 3, 5, 7 (0-indexed: 0, 2, 4, 6)
+    //     const temp = matches[i].game1;
+    //     matches[i].game1 = matches[i].game2;
+    //     matches[i].game2 = temp;
+    //   }
+    // }
 
     for (let i = matches.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
