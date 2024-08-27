@@ -175,13 +175,13 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
         }
       
         if (!foundTeam) {
-          console.log("Not enough valid teams to form a match");
+          // console.log("Not enough valid teams to form a match");
           break; // Exit the outer loop if no valid team was found in this iteration
         }
       }
 
-      console.log("Used Players Loop: ", usedPlayers)
-      // console.log('teams: ', teams)
+      // console.log("Used Players Loop: ", usedPlayers)
+      
 
       matchGames.matchNumber = numMatches + 1;
       matchGames.game1 = {
@@ -196,6 +196,8 @@ app.post('/api/generate-tournament', ensureDbConnection, async (req, res) => {
       };
       matches.push(matchGames);
     }
+
+    console.log('teams after loop: ', teams)
     
     await db.collection('tournament').insertMany(matches);
     res.status(201).send({ message: 'Tournament generated successfully', matches });
